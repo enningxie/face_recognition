@@ -1,6 +1,7 @@
 # tools
 import face_recognition as fr
 import pickle
+import cv2
 
 PWD = "/home/enningxie/Pictures/"
 
@@ -23,3 +24,12 @@ def load(filename):
     with open(filename, 'rb') as file:
         data = pickle.load(file)
         return data
+
+
+# draw rectangle given a loc
+def draw_rectangle(loc, image):
+    top, right, bottom, left = loc
+    cv2.rectangle(image, (left, top), (right, bottom), (0, 0, 255), 2)
+    return image
+
+

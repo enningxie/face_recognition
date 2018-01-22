@@ -10,7 +10,7 @@ stu_encodings = []
 
 def main():
     for i in range(5):
-        pwd = PWD + "0face/stu0_" + str(i) + ".jpg"
+        pwd = PWD + "0face/stu1_" + str(i) + ".jpg"
         stu_encoding = load_image_to_encoding(pwd)
         stu_encodings.append(stu_encoding)
     numpy_stu_encodings = np.asarray(stu_encodings)
@@ -23,9 +23,10 @@ def main():
     # for i, dis in enumerate(dises):
     #     print(i, ": ", dis)
 
-    result = load('pic_04.pkl')
+    result = load('/home/enningxie/Documents/Codes/Face_recognition/data/608.pkl')
     pic_image = result['pic_image']
     locs = result['locs']
+    result_encoding_01 = load('/home/enningxie/Documents/Codes/Face_recognition/data/stu_1.pkl')
     print(len(locs))
     locs_encodings = fr.face_encodings(pic_image, locs)
     locs_dis = fr.face_distance(locs_encodings, result_encoding)
@@ -47,7 +48,7 @@ def main():
         cv2.putText(pic_image, str(name), (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
 
     image = pic_image[:, :, ::-1]
-    cv2.imwrite(PWD + 'result_04.jpg', image)
+    cv2.imwrite(PWD + '1_608_.jpg', image)
 
     print('done.')
 

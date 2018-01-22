@@ -2,7 +2,7 @@ import face_recognition as fr
 from utility import *
 
 
-pic = '/home/enningxie/Pictures/pic/607.jpg'
+pic = '/home/enningxie/Pictures/pic/608.jpg'
 # 2. 读入一张图片
 pic_image = fr.load_image_file(pic)
 # 找到图中所有的面部的location
@@ -12,6 +12,6 @@ result = {
     'pic_image': pic_image,
     'locs': locs
 }
-save('pic_04.pkl', result)
+save('/home/enningxie/Documents/Codes/Face_recognition/data/608.pkl', result)
 
 print('done.')
