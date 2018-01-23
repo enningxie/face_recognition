@@ -23,13 +23,13 @@ def main():
     # for i, dis in enumerate(dises):
     #     print(i, ": ", dis)
 
-    result = load('/home/enningxie/Documents/Codes/Face_recognition/data/608.pkl')
+    result = load('/home/enningxie/Documents/Codes/Face_recognition/data/shot0004.pkl')
     pic_image = result['pic_image']
     locs = result['locs']
-    result_encoding_01 = load('/home/enningxie/Documents/Codes/Face_recognition/data/stu_1.pkl')
+    result_encoding_01 = load('/home/enningxie/Documents/Codes/Face_recognition/data/stu_3.pkl')
     print(len(locs))
     locs_encodings = fr.face_encodings(pic_image, locs)
-    locs_dis = fr.face_distance(locs_encodings, result_encoding)
+    locs_dis = fr.face_distance(locs_encodings, result_encoding_01)
     print(locs_dis)
     face_names = np.around(locs_dis, decimals=2)
     print('-----------------------------------------')
@@ -48,7 +48,7 @@ def main():
         cv2.putText(pic_image, str(name), (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
 
     image = pic_image[:, :, ::-1]
-    cv2.imwrite(PWD + '1_608_.jpg', image)
+    cv2.imwrite(PWD + 'shot0004_3.jpg', image)
 
     print('done.')
 

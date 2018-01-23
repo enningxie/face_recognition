@@ -5,6 +5,14 @@ import cv2
 
 PWD = "/home/enningxie/Pictures/"
 
+a = tuple((602, 2905, 901, 2606))  # stu_0
+
+b = tuple((940, 1660, 1400, 1250))  # stu_2
+
+c = tuple((1273, 2380, 1837, 1850))  # stu_1
+
+d = tuple((498, 3213, 677, 3034))  # stu_3
+
 
 # give image_path return image_encoding
 def load_image_to_encoding(pwd):
