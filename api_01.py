@@ -1,4 +1,3 @@
-# knn
 from math import sqrt
 from sklearn import neighbors
 from os import listdir
@@ -7,11 +6,17 @@ import pickle
 from PIL import Image, ImageFont, ImageDraw, ImageEnhance
 import face_recognition
 from face_recognition import face_locations
-from face_recognition.cli import image_files_in_folder
-from utils import load_data
+import numpy as np
 
-ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
+# load data from file
+def load_data(filename):
+    with open(filename, 'rb') as file:
+        data = pickle.load(file)
+        return data
+
+
+# train knn_model
 def train(train_dir, model_save_path = "", n_neighbors = None, knn_algo = 'ball_tree', verbose=False):
     """
     Trains a k-nearest neighbors classifier for face recognition.
@@ -60,7 +65,8 @@ def train(train_dir, model_save_path = "", n_neighbors = None, knn_algo = 'ball_
     return knn_clf
 
 
-def predict(X_img_path, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
+# predict
+def predict(frame, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
     """
     recognizes faces in given image, based on a trained knn classifier
 
@@ -83,11 +89,11 @@ def predict(X_img_path, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
     #         knn_clf = pickle.load(f)
 
     # X_img = face_recognition.load_image_file(X_img_path)
-    X_faces_loc = face_locations(X_img_path, number_of_times_to_upsample=0, model='cnn')
+    X_faces_loc = face_locations(frame, number_of_times_to_upsample=0, model='cnn')
     if len(X_faces_loc) == 0:
         return []
 
-    faces_encodings = face_recognition.face_encodings(X_img_path, known_face_locations=X_faces_loc)
+    faces_encodings = face_recognition.face_encodings(frame, known_face_locations=X_faces_loc)
 
 
     closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=1)
@@ -98,28 +104,18 @@ def predict(X_img_path, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
     return [(pred, loc) if rec else ("N/A", loc) for pred, loc, rec in zip(knn_clf.predict(faces_encodings), X_faces_loc, is_recognized)]
 
 
-def draw_preds(img_path, preds):
-    """
-    shows the face recognition results visually.
 
-    :param img_path: path to image to be recognized
-    :param preds: results of the predict function
-    :return:
-    """
-    source_img = Image.open(img_path).convert("RGBA")
-    draw = ImageDraw.Draw(source_img)
+knn_model = train("./train")
+result = dict()
+
+
+# face
+def face_rec(frame):
+    preds = predict(frame, knn_clf=knn_model)
     for pred in preds:
         loc = pred[1]
         name = pred[0]
-        # (top, right, bottom, left) => (left,top,right,bottom)
-        draw.rectangle(((loc[3], loc[0]), (loc[1],loc[2])), outline="red")
-        draw.text((loc[3], loc[0] - 30), name, font=ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 30))
-    source_img.show()
-
-# if __name__ == "__main__":
-#     knn_clf = train("./train")
-#     for img_path in listdir("./test"):
-#         preds = predict(join("./test", img_path) ,knn_clf=knn_clf)
-#         print(preds)
-#         draw_preds(join("./test", img_path), preds)
-
+        if name != 'N/A':
+            if result.get(name, '?') == '?':
+                result[name] = loc
+    return result

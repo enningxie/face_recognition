@@ -2,7 +2,7 @@ import face_recognition
 import cv2
 import numpy as np
 import pickle
-import knn_01
+import api_01
 import os
 
 # This is a demo of running face recognition on a video file and saving the results to a new video file.
@@ -39,25 +39,13 @@ while True:
     #face_locations = face_recognition.face_locations(frame, number_of_times_to_upsample=0, model="cnn")
     #face_encodings = face_recognition.face_encodings(frame, face_locations)
 
-    knn_model = knn_01.train("./train")
-    preds = knn_01.predict(frame, knn_clf=knn_model)
-
-
-    for pred in preds:
-        top, right, bottom, left = pred[1]
-        name = pred[0]
-        # Draw a box around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-        cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
-        font = cv2.FONT_HERSHEY_DUPLEX
-        cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
-
-    cv2.imshow('x', frame)
+    result = api_01.face_rec(frame)
     # cv2.waitKey(1)
     # Write the resulting image to the output video file
     print("Writing frame {} / {}".format(frame_number, length))
     output_movie.write(frame)
 
 # All done!
+print(result)
 input_movie.release()
 # cv2.destroyAllWindows()
