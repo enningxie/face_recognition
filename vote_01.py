@@ -10,7 +10,7 @@ import pickle
 # specific demo. If you have trouble installing it, try any of the other demos that don't require it instead.
 
 # Open the input movie file
-input_movie = cv2.VideoCapture("./Videos/1_02.mp4")
+input_movie = cv2.VideoCapture("./Videos/1_01.mp4")
 length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
 
 # Create an output movie file (make sure resolution/frame rate matches input video!)
@@ -75,11 +75,11 @@ while True:
         break
 
     # Find all the faces and face encodings in the current frame of video
-    face_locations = face_recognition.face_locations(frame, number_of_times_to_upsample=0, model="cnn")
+    face_locations = face_recognition.face_locations(frame)
     face_encodings = face_recognition.face_encodings(frame, face_locations)
 
     # face_names = []
-    if frame_number < 1000:
+    if frame_number < 40:
         for i, face_encoding in enumerate(face_encodings):
             # # new func
             # dises = face_recognition.face_distance(known_faces_, face_encoding)
@@ -102,35 +102,38 @@ while True:
                     for j, dis in enumerate(dises):
                         if dis < 0.3:
                             count_locs[k][j] += 1
+    if frame_number == 40:
+        break
 
 
-    # set name to know_locs
-    if frame_number == 1000:
-        locs_names = []
-        for index1, count_loc in enumerate(count_locs):
-            index2 = np.asarray(count_loc).argmax()  # name's index
-            locs_names.append(known_names[index2])
 
-    if frame_number > 1000:
-        # Label the results
-        for (top, right, bottom, left), name in zip(face_locations, locs_names):
-            # new func 3
-            for k, known_loc in enumerate(known_locs):
-                top_, right_, bottom_, left_ = known_loc
-                if top > top_ and right < right_ and bottom < bottom_ and left > left_:
-                    cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-                    # Draw a label with a name below the face
-                    cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
-                    font = cv2.FONT_HERSHEY_DUPLEX
-                    cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
+    # # set name to know_locs
+    # if frame_number == 1000:
+    #     locs_names = []
+    #     for index1, count_loc in enumerate(count_locs):
+    #         index2 = np.asarray(count_loc).argmax()  # name's index
+    #         locs_names.append(known_names[index2])
+    #
+    # if frame_number > 1000:
+    #     # Label the results
+    #     for (top, right, bottom, left), name in zip(face_locations, locs_names):
+    #         # new func 3
+    #         for k, known_loc in enumerate(known_locs):
+    #             top_, right_, bottom_, left_ = known_loc
+    #             if top > top_ and right < right_ and bottom < bottom_ and left > left_:
+    #                 cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+    #                 # Draw a label with a name below the face
+    #                 cv2.rectangle(frame, (left, bottom - 25), (right, bottom), (0, 0, 255), cv2.FILLED)
+    #                 font = cv2.FONT_HERSHEY_DUPLEX
+    #                 cv2.putText(frame, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
 
 
     # # Write the resulting image to the output video file
     print("Writing frame {} / {}".format(frame_number, length))
-    output_movie.write(frame)
+    #output_movie.write(frame)
 
 # All done!
-#print(count_locs)
+print(count_locs)
 #print('done.')
 input_movie.release()
 # cv2.destroyAllWindows()
