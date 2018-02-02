@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import pickle
 import api_01
+from utils import save
 import os
 
 # This is a demo of running face recognition on a video file and saving the results to a new video file.
@@ -39,13 +40,16 @@ while True:
     #face_locations = face_recognition.face_locations(frame, number_of_times_to_upsample=0, model="cnn")
     #face_encodings = face_recognition.face_encodings(frame, face_locations)
 
-    result = api_01.face_rec(frame)
+    result = api_01.face_rec(frame, frame_number)
     # cv2.waitKey(1)
     # Write the resulting image to the output video file
     print("Writing frame {} / {}".format(frame_number, length))
-    output_movie.write(frame)
+    # output_movie.write(frame)
+    print(result)
+    if len(result) == 16:
+        break
 
 # All done!
-print(result)
+save('./result.pkl', result)
 input_movie.release()
 # cv2.destroyAllWindows()

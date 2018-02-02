@@ -60,7 +60,7 @@ def train(train_dir, model_save_path = "", n_neighbors = None, knn_algo = 'ball_
     return knn_clf
 
 
-def predict(X_img_path, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
+def predict(X_img_path, knn_clf = None, model_save_path ="", DIST_THRESH = .33):
     """
     recognizes faces in given image, based on a trained knn classifier
 
@@ -82,12 +82,12 @@ def predict(X_img_path, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
     #     with open(model_save_path, 'rb') as f:
     #         knn_clf = pickle.load(f)
 
-    # X_img = face_recognition.load_image_file(X_img_path)
-    X_faces_loc = face_locations(X_img_path, number_of_times_to_upsample=0, model='cnn')
+    X_img = face_recognition.load_image_file(X_img_path)
+    X_faces_loc = face_locations(X_img, number_of_times_to_upsample=0, model='cnn')
     if len(X_faces_loc) == 0:
         return []
 
-    faces_encodings = face_recognition.face_encodings(X_img_path, known_face_locations=X_faces_loc)
+    faces_encodings = face_recognition.face_encodings(X_img, known_face_locations=X_faces_loc)
 
 
     closest_distances = knn_clf.kneighbors(faces_encodings, n_neighbors=1)
@@ -116,10 +116,10 @@ def draw_preds(img_path, preds):
         draw.text((loc[3], loc[0] - 30), name, font=ImageFont.truetype('Pillow/Tests/fonts/FreeMono.ttf', 30))
     source_img.show()
 
-# if __name__ == "__main__":
-#     knn_clf = train("./train")
-#     for img_path in listdir("./test"):
-#         preds = predict(join("./test", img_path) ,knn_clf=knn_clf)
-#         print(preds)
-#         draw_preds(join("./test", img_path), preds)
+if __name__ == "__main__":
+    knn_clf = train("./train")
+    for img_path in listdir("./test"):
+        preds = predict(join("./test", img_path) ,knn_clf=knn_clf)
+        print(preds)
+        draw_preds(join("./test", img_path), preds)
 

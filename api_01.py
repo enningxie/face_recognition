@@ -108,14 +108,13 @@ def predict(frame, knn_clf = None, model_save_path ="", DIST_THRESH = .3):
 knn_model = train("./train")
 result = dict()
 
-
 # face
-def face_rec(frame):
+def face_rec(frame, frame_num):
     preds = predict(frame, knn_clf=knn_model)
     for pred in preds:
         loc = pred[1]
+        loc_ = loc + (frame_num,)
         name = pred[0]
-        if name != 'N/A':
-            if result.get(name, '?') == '?':
-                result[name] = loc
+        if name != 'N/A' and result.get(name, '?') == '?':
+            result[name] = loc_
     return result
